@@ -54,7 +54,7 @@ Examples:
 
 Use "{{.Exec}} help format-loader" for more information about format.
 	`,
-	Run: executeRun,
+	//Run: executeRun,
 }
 
 var (
@@ -64,20 +64,21 @@ var (
 	configDirRecursively *bool
 )
 
-func setConfigFlags(cmd *base.Command) {
-	configFormat = cmd.Flag.String("format", core.FormatAuto, "")
-	configDirRecursively = cmd.Flag.Bool("r", false, "")
-
-	cmd.Flag.Var(&configFiles, "config", "")
-	cmd.Flag.Var(&configFiles, "c", "")
-	cmd.Flag.Var(&configDirs, "confdir", "")
-	cmd.Flag.Var(&configDirs, "d", "")
+func setConfigFlags() {
+	var auto = "auto"
+	configFormat = &auto
+	var rec = false
+	configDirRecursively = &rec
+	for i, arg := range os.Args {
+		if arg == "-config" {
+			configFiles = append(configFiles, os.Args[i+1])
+		}
+	}
+	configDirs = make([]string, 0)
 }
 
-func executeRun(cmd *base.Command, args []string) {
-	setConfigFlags(cmd)
-	cmd.Flag.Parse(args)
-	printVersion()
+func ExecuteRun() {
+	setConfigFlags()
 	configFiles = getConfigFilePath()
 	server, err := startV2Ray()
 	if err != nil {

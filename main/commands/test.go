@@ -47,7 +47,7 @@ Use "{{.Exec}} help format-loader" for more information about format.
 }
 
 func executeTest(cmd *base.Command, args []string) {
-	setConfigFlags(cmd)
+	setConfigFlags()
 	cmd.Flag.Parse(args)
 	printVersion()
 	configFiles = getConfigFilePath()

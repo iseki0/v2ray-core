@@ -104,9 +104,7 @@ func WriteTCPRequest(request *protocol.RequestHeader, writer io.Writer) (buf.Wri
 	if account.Cipher.IVSize() > 0 {
 		iv = make([]byte, account.Cipher.IVSize())
 		common.Must2(rand.Read(iv))
-		if account.ReducedIVEntropy {
-			remapToPrintable(iv[:6])
-		}
+		remapToPrintable(iv[:6])
 		if ivError := account.CheckIV(iv); ivError != nil {
 			return nil, newError("failed to mark outgoing iv").Base(ivError)
 		}

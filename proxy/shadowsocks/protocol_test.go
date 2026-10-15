@@ -120,6 +120,13 @@ func TestTCPRequest(t *testing.T) {
 
 		writer, err := WriteTCPRequest(request, cache)
 		common.Must(err)
+		if request.User.Account.(*MemoryAccount).Cipher.IVSize() > 0 {
+			for _, b := range cache.BytesTo(6) {
+				if b < 32 || b > 126 {
+					t.Fatalf("TCP IV prefix contains non-printable byte: %x", b)
+				}
+			}
+		}
 
 		common.Must(writer.WriteMultiBuffer(buf.MultiBuffer{data}))
 
